@@ -1,4 +1,4 @@
-# nagamasa-hasegawa.dev
+# green-caviar.dev
 
 個人サイト(自己紹介・経歴)。GitHub Pages で配信する静的1ページ。
 
