@@ -6,16 +6,25 @@
 <title>長谷川永将 | Nagamasa Hasegawa</title>
 <meta name="description" content="長谷川永将(Nagamasa Hasegawa)。一橋大学ソーシャル・データサイエンス学部。Pythonバックエンドと自然言語処理。">
 <style>
-:root{ --ink:#1d2129; --sub:#59606c; --accent:#31548C; --line:#e4e2dc; --ground:#fbfaf7; }
+:root{
+  --ink:#1d2129; --sub:#59606c; --accent:#31548C; --line:#e4e2dc; --ground:#fbfaf7;
+  /* 写真レール(縦モード)。--rail-h は下の式の実値なので --rail-slots を変えたら両方直す
+     --rail-h = big + gap + small + (slots - 2) * (small + gap) = 132+20+72+4*92 = 592 */
+  --ball-big:132px; --ball-small:72px; --ball-gap:20px;
+  --rail-slots:6; --rail-h:592px; --rail-shift:-18px; --rail-mode:v;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--ground);color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;font-size:15.5px;line-height:2}
-main{max-width:1040px;margin:0 auto;padding:64px clamp(28px,7vw,96px) 80px}
+main{max-width:1240px;margin:0 auto;padding:64px clamp(24px,5vw,72px) 80px}
 
-header{display:flex;align-items:center;gap:clamp(28px,4vw,48px)}
-.avatar{position:relative;flex:0 0 auto;width:clamp(110px,14vw,140px);height:clamp(110px,14vw,140px);border-radius:50%;border:1px solid var(--line);overflow:hidden;background:var(--ground)}
-.avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;opacity:0;transition:opacity .7s ease-in-out}
-.avatar img.is-visible{opacity:1}
-@media(prefers-reduced-motion:reduce){.avatar img{transition:none}}
+.page{display:grid;grid-template-columns:var(--ball-big) minmax(0,1fr);gap:0 clamp(32px,4vw,64px);align-items:start}
+.content{grid-column:2;grid-row:1;min-width:0}
+
+.rail{grid-column:1;grid-row:1;position:relative;width:var(--ball-big);height:var(--rail-h);margin-top:var(--rail-shift);overflow:hidden;visibility:hidden}
+.rail.is-ready{visibility:visible}
+.ball{position:absolute;top:0;left:0;width:var(--ball-big);height:var(--ball-big);border-radius:50%;object-fit:cover;background:var(--ground);box-shadow:0 0 0 1.5px var(--line);transform-origin:50% 50%;opacity:0;will-change:transform,opacity;transition:transform .4s cubic-bezier(.2,.85,.3,1),opacity .4s ease}
+@media(prefers-reduced-motion:reduce){.ball{transition:none}}
+
 header h1{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(26px,3.4vw,34px);font-weight:600;letter-spacing:.06em}
 header .romaji{font-size:12.5px;letter-spacing:.22em;color:var(--sub);text-transform:uppercase;margin-top:4px}
 header .tagline{margin-top:14px;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:17px;letter-spacing:.04em}
@@ -39,25 +48,48 @@ ul.vtimeline li::before{content:"";position:absolute;left:0;top:7px;width:12px;h
 
 footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--sub)}
 
+/* レールが左の一列を取るぶん、2列本文は早めに1列へ落とす */
+@media(max-width:980px){
+  .cols{grid-template-columns:1fr;gap:48px 0}
+}
+
+/* スマホ: レールを畳んでページ最上部の横一列にする */
 @media(max-width:760px){
-  header{flex-direction:column;align-items:flex-start;gap:24px}
-  .cols{grid-template-columns:1fr;gap:56px 0}
+  :root{ --ball-big:64px; --ball-gap:16px; --rail-mode:h; }
+  .page{grid-template-columns:minmax(0,1fr);gap:28px 0}
+  .content{grid-column:1;grid-row:2}
+  .rail{grid-column:1;grid-row:1;width:100%;height:var(--ball-big);margin-top:0}
 }
 </style>
+<noscript><style>
+  .rail{visibility:visible;height:var(--ball-big);overflow:visible;margin-top:0}
+  .ball{position:static;opacity:1}
+  .ball:not(:first-of-type){display:none}
+</style></noscript>
 </head>
 <body>
 <main>
+<div class="page">
+
+<div class="rail" id="rail">
+  <img class="ball" src="photo.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-01.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-02.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-03.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-04.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-05.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-06.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-07.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-08.jpg" alt="" aria-hidden="true" decoding="async">
+  <img class="ball" src="faces/face-09.jpg" alt="" aria-hidden="true" decoding="async">
+</div>
+
+<div class="content">
 
 <header>
-  <div class="avatar">
-    <img class="is-visible" src="photo.jpg" alt="長谷川永将の顔写真">
-    <img src="photo.jpg" alt="" aria-hidden="true">
-  </div>
-  <div>
-    <h1>長谷川 永将</h1>
-    <p class="romaji">Nagamasa Hasegawa</p>
-    <p class="tagline">美を追求し、学びを血肉に</p>
-  </div>
+  <h1>長谷川 永将</h1>
+  <p class="romaji">Nagamasa Hasegawa</p>
+  <p class="tagline">美を追求し、学びを血肉に</p>
 </header>
 
 <div class="cols">
@@ -110,49 +142,174 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
   © 2026 Nagamasa Hasegawa
 </footer>
 
+</div>
+</div>
 </main>
 
 <script>
+/* 顔写真レール: 10枚を1本のキューとして循環させる。
+   球のDOMは固定で、各球が持つ「論理位置 slot」を毎ステップ1つ減らすだけ。
+   slot 0 = 焦点(大)、1..n-1 = 小、n以上 = 下端の待機点(不可視・重ねて格納)。
+   slot 0 の球だけは一旦「上の退出点」へ動かしてから、遷移後に無音で待機点へ戻す。 */
 (function(){
-  var wrap = document.querySelector('.avatar');
-  if(!wrap) return;
-  var layers = wrap.getElementsByTagName('img');
-  if(layers.length < 2) return;
+  var rail = document.getElementById('rail');
+  if(!rail) return;
+  var balls = Array.prototype.slice.call(rail.querySelectorAll('.ball'));
+  var TOTAL = balls.length;
+  if(TOTAL < 3) return;
 
-  var sources = ['photo.jpg'];
-  for(var i = 1; i <= 9; i++) sources.push('faces/face-0' + i + '.jpg');
+  var FOCUS_ALT = '長谷川永将の顔写真(アート)';
+  var STEP_MS = 3000;   // 1段進むまでの間隔
+  var MOVE_MS = 400;    // CSS transition と揃える
+  var DIM = '0.88';     // 焦点以外のわずかな沈め
 
-  // 動きを抑える設定では最初の1枚を出したまま止める
-  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-  // 全画像を先読みし、初回の切り替えで白く抜けないようにする
-  var warm = [];
-  for(var j = 1; j < sources.length; j++){
-    var im = new Image();
-    im.src = sources[j];
-    warm.push(im);
+  var slot = [];        // slot[i] = balls[i] の論理位置
+  var geo = null;
+  var focusIdx = -1;
+  var timer = null, resetTimer = null, resizeTimer = null;
+  var pendingExit = -1; // 退出中の球(遷移後に待機点へ戻す)
+
+  function cssNum(style, name, fallback){
+    var v = parseFloat(style.getPropertyValue(name));
+    return isNaN(v) ? fallback : v;
   }
 
-  var front = layers[0], back = layers[1], current = 0;
+  // CSS変数から現在のモード(縦/横)と座標を割り出す。ブレークポイントの正はCSS側。
+  function measure(){
+    var st = getComputedStyle(rail);
+    var big = cssNum(st, '--ball-big', 132);
+    var gap = cssNum(st, '--ball-gap', 20);
+    var horiz = (st.getPropertyValue('--rail-mode') || 'v').trim() === 'h';
+    var pos = [], n, k;
 
-  function swap(next){
-    back.classList.add('is-visible');
-    front.classList.remove('is-visible');
-    var t = front; front = back; back = t;
-    current = next;
+    if(horiz){
+      var w = rail.clientWidth || big;
+      n = Math.floor((w - big) / (big + gap)) + 1;  // 帯幅に入るだけ並べる(スマホ実寸では4個前後)
+      if(n < 3) n = 3;
+      if(n > TOTAL - 1) n = TOTAL - 1;
+      var off = Math.max(0, (w - (n*big + (n-1)*gap)) / 2);  // 帯の中央に寄せる
+      // 横モードは一様サイズ。焦点は先頭(左端)で、扱いは縦と揃える
+      for(k = 0; k < n; k++) pos.push({cx: off + big/2 + k*(big+gap), cy: big/2, s:1, focus:k===0});
+      geo = {
+        big: big, n: n, pos: pos,
+        // 退出点/待機点は必ず帯の外側に置く(端から出入りして見えるように)
+        exit:  {cx: Math.min(pos[0].cx - big - gap, -big/2), cy: big/2, s:1, focus:false},
+        entry: {cx: Math.max(pos[n-1].cx + big + gap, w + big/2), cy: big/2, s:1, focus:false}
+      };
+    } else {
+      var small = cssNum(st, '--ball-small', 72);
+      var sc = small / big;
+      n = Math.round(cssNum(st, '--rail-slots', 6));
+      if(n < 2) n = 2;
+      if(n > TOTAL - 1) n = TOTAL - 1;
+      pos.push({cx: big/2, cy: big/2, s:1, focus:true});
+      for(k = 1; k < n; k++) pos.push({cx: big/2, cy: big + gap + small/2 + (k-1)*(small+gap), s:sc, focus:false});
+      geo = {
+        big: big, n: n, pos: pos,
+        exit:  {cx: big/2, cy: pos[0].cy - big/2 - gap - small/2, s:sc, focus:false},
+        entry: {cx: big/2, cy: pos[n-1].cy + small + gap, s:sc, focus:false}
+      };
+    }
   }
 
-  setInterval(function(){
-    var next;
-    do { next = Math.floor(Math.random() * sources.length); } while(next === current);
+  function apply(el, p, visible){
+    var half = geo.big / 2;
+    el.style.transform = 'translate(' + (p.cx - half).toFixed(2) + 'px,' + (p.cy - half).toFixed(2) + 'px) scale(' + p.s.toFixed(4) + ')';
+    el.style.opacity = visible ? (p.focus ? '1' : DIM) : '0';
+    el.style.zIndex = p.focus ? '2' : '1';
+  }
 
-    // 裏面に既に同じ画像が載っている場合は load が発火しないので即入れ替える
-    if(back.getAttribute('src') === sources[next]){ swap(next); return; }
+  function render(i){
+    var p = slot[i];
+    if(p < geo.n) apply(balls[i], geo.pos[p], true);
+    else apply(balls[i], geo.entry, false);
+  }
 
-    back.onload = function(){ back.onload = back.onerror = null; swap(next); };
-    back.onerror = function(){ back.onload = back.onerror = null; };
-    back.setAttribute('src', sources[next]);
-  }, 3000);
+  // 遷移を切った状態で位置を書き換える(循環の継ぎ目を無音にする)
+  function instant(fn){
+    var i;
+    for(i = 0; i < TOTAL; i++) balls[i].style.transition = 'none';
+    fn();
+    void rail.offsetHeight;
+    for(i = 0; i < TOTAL; i++) balls[i].style.transition = '';
+  }
+
+  function setFocus(i){
+    if(focusIdx === i) return;
+    if(focusIdx >= 0){
+      balls[focusIdx].setAttribute('alt', '');
+      balls[focusIdx].setAttribute('aria-hidden', 'true');
+    }
+    focusIdx = i;
+    if(i >= 0){
+      balls[i].setAttribute('alt', FOCUS_ALT);
+      balls[i].removeAttribute('aria-hidden');
+    }
+  }
+
+  function flushExit(){
+    if(pendingExit < 0) return;
+    var i = pendingExit;
+    pendingExit = -1;
+    instant(function(){ render(i); });
+  }
+
+  function tick(){
+    flushExit();  // 前回の退出球を確実に待機点へ戻してから次を進める
+    var i, next = -1;
+    for(i = 0; i < TOTAL; i++){
+      if(slot[i] === 0){
+        slot[i] = TOTAL - 1;
+        apply(balls[i], geo.exit, false);
+        pendingExit = i;
+      } else {
+        slot[i] -= 1;
+        if(slot[i] === 0) next = i;
+        render(i);
+      }
+    }
+    setFocus(next);
+    if(resetTimer) clearTimeout(resetTimer);
+    resetTimer = setTimeout(flushExit, MOVE_MS + 80);
+  }
+
+  function layoutAll(){
+    measure();
+    instant(function(){
+      for(var i = 0; i < TOTAL; i++) render(i);
+    });
+  }
+
+  var order = [], i0;
+  for(i0 = 0; i0 < TOTAL; i0++) order.push(i0);
+  for(i0 = order.length - 1; i0 > 0; i0--){
+    var j = Math.floor(Math.random() * (i0 + 1));
+    var t = order[i0]; order[i0] = order[j]; order[j] = t;
+  }
+  for(i0 = 0; i0 < TOTAL; i0++) slot[i0] = order[i0];
+
+  layoutAll();
+  for(i0 = 0; i0 < TOTAL; i0++) if(slot[i0] === 0) setFocus(i0);
+  rail.classList.add('is-ready');
+
+  function start(){ if(!reduce && !timer) timer = setInterval(tick, STEP_MS); }
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    if(resetTimer){ clearTimeout(resetTimer); resetTimer = null; }
+  }
+  start();
+
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){ pendingExit = -1; layoutAll(); }, 150);
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ stop(); }
+    else { pendingExit = -1; layoutAll(); start(); }
+  });
 })();
 </script>
 </body>
