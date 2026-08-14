@@ -12,7 +12,10 @@ body{background:var(--ground);color:var(--ink);font-family:"Hiragino Kaku Gothic
 main{max-width:1040px;margin:0 auto;padding:64px clamp(28px,7vw,96px) 80px}
 
 header{display:flex;align-items:center;gap:clamp(28px,4vw,48px)}
-header img{width:clamp(110px,14vw,140px);height:clamp(110px,14vw,140px);border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+.avatar{position:relative;flex:0 0 auto;width:clamp(110px,14vw,140px);height:clamp(110px,14vw,140px);border-radius:50%;border:1px solid var(--line);overflow:hidden;background:var(--ground)}
+.avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;opacity:0;transition:opacity .7s ease-in-out}
+.avatar img.is-visible{opacity:1}
+@media(prefers-reduced-motion:reduce){.avatar img{transition:none}}
 header h1{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(26px,3.4vw,34px);font-weight:600;letter-spacing:.06em}
 header .romaji{font-size:12.5px;letter-spacing:.22em;color:var(--sub);text-transform:uppercase;margin-top:4px}
 header .tagline{margin-top:14px;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:17px;letter-spacing:.04em}
@@ -46,7 +49,10 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
 <main>
 
 <header>
-  <img src="photo.jpg" alt="長谷川永将の顔写真">
+  <div class="avatar">
+    <img class="is-visible" src="photo.jpg" alt="長谷川永将の顔写真">
+    <img src="photo.jpg" alt="" aria-hidden="true">
+  </div>
   <div>
     <h1>長谷川 永将</h1>
     <p class="romaji">Nagamasa Hasegawa</p>
@@ -105,5 +111,49 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
 </footer>
 
 </main>
+
+<script>
+(function(){
+  var wrap = document.querySelector('.avatar');
+  if(!wrap) return;
+  var layers = wrap.getElementsByTagName('img');
+  if(layers.length < 2) return;
+
+  var sources = ['photo.jpg'];
+  for(var i = 1; i <= 9; i++) sources.push('faces/face-0' + i + '.jpg');
+
+  // 動きを抑える設定では最初の1枚を出したまま止める
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // 全画像を先読みし、初回の切り替えで白く抜けないようにする
+  var warm = [];
+  for(var j = 1; j < sources.length; j++){
+    var im = new Image();
+    im.src = sources[j];
+    warm.push(im);
+  }
+
+  var front = layers[0], back = layers[1], current = 0;
+
+  function swap(next){
+    back.classList.add('is-visible');
+    front.classList.remove('is-visible');
+    var t = front; front = back; back = t;
+    current = next;
+  }
+
+  setInterval(function(){
+    var next;
+    do { next = Math.floor(Math.random() * sources.length); } while(next === current);
+
+    // 裏面に既に同じ画像が載っている場合は load が発火しないので即入れ替える
+    if(back.getAttribute('src') === sources[next]){ swap(next); return; }
+
+    back.onload = function(){ back.onload = back.onerror = null; swap(next); };
+    back.onerror = function(){ back.onload = back.onerror = null; };
+    back.setAttribute('src', sources[next]);
+  }, 3000);
+})();
+</script>
 </body>
 </html>
