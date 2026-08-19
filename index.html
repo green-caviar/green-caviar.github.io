@@ -225,8 +225,17 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
   var rail = document.getElementById('rail');
   if(!rail) return;
   var balls = Array.prototype.slice.call(rail.querySelectorAll('.ball'));
+  if(balls.length < 3) return;
+  // 背の高い画面でも球が尽きないよう、顔写真からランダムに複製して池を広げる(表示上限=POOL-1)
+  var POOL = 16;
+  var faceSrcs = balls.slice(1).map(function(b){ return b.getAttribute('src'); });
+  while(balls.length < POOL){
+    var extra = balls[1].cloneNode(false);
+    extra.src = faceSrcs[Math.floor(Math.random() * faceSrcs.length)];
+    rail.appendChild(extra);
+    balls.push(extra);
+  }
   var TOTAL = balls.length;
-  if(TOTAL < 3) return;
 
   var FOCUS_ALT = '長谷川永将の顔写真(アート)';
   var STEP_MS = 3000;   // 1段進むまでの間隔
@@ -276,6 +285,8 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
       n = Math.floor((h - big) / (small + gap)) + 1;
       if(n < 2) n = 2;
       if(n > TOTAL - 1) n = TOTAL - 1;
+      // 最下段の球が下端(©のライン)に揃うよう、余りを間隔へ均等に配る
+      gap = Math.max(8, (h - big - (n-1)*small) / (n-1));
       pos.push({cx: big/2, cy: big/2, s:1, focus:true});
       for(k = 1; k < n; k++) pos.push({cx: big/2, cy: big + gap + small/2 + (k-1)*(small+gap), s:sc, focus:false});
       geo = {
