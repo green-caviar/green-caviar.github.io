@@ -11,10 +11,10 @@
 <style>
 :root{
   --ink:#1d2129; --sub:#59606c; --accent:#31548C; --line:#e4e2dc; --ground:#fbfaf7;
-  /* 写真レール(縦モード)。--rail-h は下の式の実値なので --rail-slots を変えたら両方直す
-     --rail-h = big + gap + small + (slots - 2) * (small + gap) = 132+20+72+4*92 = 592 */
+  /* 写真レール(縦モード)。高さは本文列に合わせて自動で伸び、入る数だけ球を並べる
+     (--rail-h はJS無効時等のフォールバック値のみ) */
   --ball-big:132px; --ball-small:72px; --ball-gap:20px;
-  --rail-slots:6; --rail-h:592px; --rail-shift:-18px; --rail-mode:v;
+  --rail-h:592px; --rail-shift:-18px; --rail-mode:v;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--ground);color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;font-size:15.5px;line-height:2;min-height:100vh;display:flex}
@@ -23,7 +23,7 @@ main{width:100%;min-width:0;max-width:1240px;margin:auto;padding:56px clamp(24px
 .page{display:grid;grid-template-columns:var(--ball-big) minmax(0,1fr);gap:0 clamp(32px,4vw,64px);align-items:start}
 .content{grid-column:2;grid-row:1;min-width:0}
 
-.rail{grid-column:1;grid-row:1;position:relative;width:var(--ball-big);height:var(--rail-h);margin-top:var(--rail-shift);overflow:hidden;visibility:hidden}
+.rail{grid-column:1;grid-row:1;position:relative;width:var(--ball-big);height:auto;align-self:stretch;min-height:var(--rail-h);margin-top:var(--rail-shift);overflow:hidden;visibility:hidden}
 .rail.is-ready{visibility:visible}
 .ball{position:absolute;top:0;left:0;width:var(--ball-big);height:var(--ball-big);border-radius:50%;object-fit:cover;background:var(--ground);box-shadow:0 0 0 1.5px var(--line);transform-origin:50% 50%;opacity:0;will-change:transform,opacity;transition:transform .4s cubic-bezier(.2,.85,.3,1),opacity .4s ease}
 @media(prefers-reduced-motion:reduce){.ball{transition:none}}
@@ -59,7 +59,7 @@ ul.awards li:last-child{padding-bottom:0}
 /* WRITING: 記事カード */
 .post-card{display:flex;gap:16px;align-items:center;margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;text-decoration:none;color:var(--ink);transition:border-color .2s ease}
 .post-card:hover,.post-card:focus-visible{border-color:var(--accent)}
-.post-thumb{width:104px;height:74px;object-fit:cover;border-radius:6px;flex:0 0 auto}
+.post-thumb{width:104px;height:74px;object-fit:cover;object-position:left bottom;border-radius:6px;flex:0 0 auto}
 .post-body{display:block;min-width:0}
 .post-body .when,.post-title,.post-card .note{display:block}
 .post-title{font-weight:700;color:var(--accent);margin-top:2px}
@@ -271,7 +271,9 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
     } else {
       var small = cssNum(st, '--ball-small', 72);
       var sc = small / big;
-      n = Math.round(cssNum(st, '--rail-slots', 6));
+      // 本文列の高さいっぱいに入るだけ並べる(rail は align-self:stretch で行の高さに追随)
+      var h = rail.clientHeight || cssNum(st, '--rail-h', 592);
+      n = Math.floor((h - big) / (small + gap)) + 1;
       if(n < 2) n = 2;
       if(n > TOTAL - 1) n = TOTAL - 1;
       pos.push({cx: big/2, cy: big/2, s:1, focus:true});
