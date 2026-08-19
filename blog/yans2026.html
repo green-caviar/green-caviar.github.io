@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YANS2026に参加してきました | 長谷川永将</title>
+<meta name="description" content="NLP若手の会シンポジウム(YANS2026)参加記。学部3年・初参加でハッカソンICL部門優秀賞。">
+<meta property="og:title" content="YANS2026に参加してきました | 長谷川永将">
+<meta property="og:description" content="NLP若手の会シンポジウム(YANS2026)参加記。学部3年・初参加でハッカソンICL部門優秀賞。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://green-caviar.dev/blog/yans2026.html">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<main class="site-shell">
+<header class="article-header">
+  <div class="header-copy">
+    <a class="back-link" href="../">← トップ</a>
+    <h1>YANS2026に参加してきました</h1>
+    <p class="article-meta"><span>2026.8.19</span><span>約8分</span></p>
+  </div>
+  <figure class="hero wide">
+    <img src="images/yans2026-hero.jpg" alt="YANS2026ハッカソンの受賞発表で登壇している様子" width="1600" height="857">
+    <figcaption>受賞発表にて</figcaption>
+  </figure>
+</header>
+
+<div class="article-layout">
+<article>
+  <p>8月16日から18日まで、仙台で開催されたNLP若手の会シンポジウム(YANS2026)に参加しました。学部3年での初参加です。前日のハッカソンから本会議までの3日間で、ハッカソンではICL部門の優秀賞をいただき、作りたいものが1つ見つかりました。</p>
+
+  <h2 id="hackathon">ハッカソン: 「似た事例を選ぶ」から「誤りを教える」へ</h2>
+
+  <p>タスクは引用妥当性判定でした。論文中の引用文脈が、引用先の論文に対して適切かどうかを判定LLMに当てさせます。ただし、こちらが触れるのはfew-shot事例セット(最大5件)だけ。モデルもプロンプト本体も固定です。つまり「クエリごとに、判定LLMへ何を見せるか」だけで戦う設計コンペでした。</p>
+
+  <p>チームは学年も所属もバラバラの6人で、私は最年少のB3。専門知識は一番ありませんでした。だから、他のメンバーが取る解決手段を理解するところから始めました。ただ、この「理解から始める」過程が、結果的にチームの議論を助けたと思っています。</p>
+
+  <p>測ってみると、類似度の近い事例のラベル付けを真似すれば正解率が上がる、というkNNの目的の1つは達成されておらず、負例の型がトピックごとに偏るわけでもありませんでした。このことから、事例を類似度で選ぶことに懐疑的になりました。LLMに教えるべきは、正例と負例の境界ではないかと思ったのです。</p>
+
+  <p>そこで、MMRなどで事例に多様性を持たせればいいのではという議論が出ました。しかし、私はこれに納得できませんでした。ファジーな事例には多様性を見せるのがいいのかもしれない。しかし、果たして明確な負例にまで多様性を見せる必要があるのか。明確な誤りには、同型の事例で誤りの型そのものを教える。こうして方針は「似た事例を選ぶ」から「誤りを教える」へ切り替わりました。</p>
+
+  <h2 id="responsibility">なぜ差がついたのか: LLMの責務を限定する</h2>
+
+  <p>振り返ると、効いたのは機械学習の知識ではなく、ソフトウェア設計の考え方だったと思います。</p>
+
+  <p>エンジニアリングでは、責務を切り離すことが良いとされます。ルールで確実に判定できるものはルールで先に処理し、ファジーな判定だけをLLMに残す。事例を同型に限定することで、LLMの出力をほぼ限定する。つまり操縦性を上げる。この「LLMの責務を限定する」という考えに至れたことが、受賞の一番の要因だった気がしています。</p>
+
+  <p>この考え方は、長期インターンで学んだものでした。課題を複数のレイヤーから考える型。情報の渡し方と、責務分離。推薦ロジックをドメイン駆動設計(DDD)で実装した経験があったから、その抽象的な目的を初見のタスクに応用できたのだと思います。<a href="https://www.amazon.co.jp/dp/B0H7FLMYNY" target="_blank" rel="noopener">『システム開発と「具体と抽象」』</a>は名著です。読み切ろうと思います。</p>
+
+  <p>自分の強みも1つ言語化できました。仮説がたくさん出るとき、「その仮説はどの課題を解こうとしているのか」と、抽象度のレイヤーを上げ下げすることです。</p>
+
+  <p>もっとも、今回のタスクは事例設計で、プロンプトは固定でした。プロンプト設計まで自由だったら、各チームの戦略は大きく変わっただろうと思います。</p>
+
+  <h2 id="team">反省: 議論はできた。「チーム」にはなりきれなかった</h2>
+
+  <p>初対面の人と議論するのは、純粋に楽しかったです。一方で、互いの役割を把握しながら議論を組み立てるのは難しいことでした。誰が何をどれぐらいできるかを属性から憶測するしかなく、コミュニケーションがうまくいったとは言えません。結局、ほぼ各自作業で場当たり的に進み、最後に組み合わせる形になりました。</p>
+
+  <p>課題として、リーダー的な役割は果たせませんでした。初参加で最年少ということもあり、尻込みしていたと思います。アイスブレイクや、個々の議論を投げることはできました。ただ、「チームとしてこの仮説を検証しよう」と旗を立てること。役割分担をして各人の担当範囲を明確にし、全員が作業状況を互いに把握すること。「チーム」として取り組む部分は、最大限できたとは言えません。これは次に持ち越す課題で、インターンでも意識的に取り組みたいことです。</p>
+
+  <h2 id="sharing">もう1つの収穫: AIの出力をどう共有するか</h2>
+
+  <p>ハッカソン中、AIの出力をいかに認知負荷を下げて理解可能な形にするかの設計が、大きな学びになりました。個人としては実践できていたつもりですが、チームメンバーにどう共有するかという課題が顕在化しました。</p>
+
+  <p>HTMLで共有するチーム、AIチャットの共有機能を使うチームがありました。ただ、共有機能は所属組織のアカウント種別によって外部共有が制限されますし、メンバーごとに使うAIサービスも違います。汎用的な共有手段がないのです。</p>
+
+  <p>一番感動したのは、負例を人手でチェックするGUIを作っていたチームでした。私は正解率のような集計値しか見ておらず、負例の中身はAIの分類を信頼するしかありませんでした。コードエディタでは負例は見にくいですし、ファイルは分散しています。人間が理解可能なGUIにすることは、意思決定を促進する。ここで、自分が作りたいものが1つ見つかりました。</p>
+  <p>作ろうと考えているのは、AIの出力(HTML)をチームに閉じた形で共有できる、self-host可能な基盤です。手元のHTMLをコマンド1つで上げると、認証つきのURLで仲間だけが見られる。公開前に外部通信や秘密情報を検査して、うっかり事故を防ぐ。特定のAIサービスの共有機能に依存しないので、使うエージェントが違っても同じ場所に置けます。まずは自分と研究室で使うところから、OSSとして作っていくつもりです。</p>
+
+  <h2 id="posters">本会議: ポスターセッションを歩き回って気づいた自分の癖</h2>
+
+  <p>本会議は2日間、ポスターセッションを歩き回りました。気づいたのは、自分はどの研究を聞くときも、社会実装の観点を必ず入れてしまうことです。多くの研究は背景に課題意識を持っています。ただ、「その提案手法は、本当にその課題の一番重要な箇所なのか?」と考えてしまうのです。例えば、特定のペルソナに合わせた応答を目指す研究。ペルソナ情報に適切に応答できるかが抽象的な議題だとして、そもそもペルソナ情報を過不足なくLLMに渡すこと自体が一番難しいのではないか、とか。</p>
+
+  <p>純粋に、研究はものすごく楽しそうでした。同時に、ポスターを面白く聴講するにも専門知識が要ります。ベースの能力を上げなければ、とも思いました。スポンサー企業のブースでは、研究がどう社会実装されるかを知ることができました。</p>
+
+  <h2 id="conclusion">おわりに</h2>
+
+  <p>初の学会参加でしたが、いろんな刺激をもらえてものすごく勉強になりました。次は年次大会。発表を行う立場として参加したいです。</p>
+</article>
+
+<aside class="toc" aria-label="目次">
+  <p class="toc-title">目次</p>
+  <ul>
+    <li><a href="#hackathon" aria-current="true">ハッカソン</a></li>
+    <li><a href="#responsibility">なぜ差がついたのか</a></li>
+    <li><a href="#team">反省</a></li>
+    <li><a href="#sharing">AIの出力の共有</a></li>
+    <li><a href="#posters">本会議</a></li>
+    <li><a href="#conclusion">おわりに</a></li>
+  </ul>
+</aside>
+</div>
+
+<footer>
+  <a href="../">← トップへ戻る</a>
+  <span>© 2026 Nagamasa Hasegawa</span>
+</footer>
+</main>
+
+<script>
+(function(){
+  var links=Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var headings=Array.prototype.slice.call(document.querySelectorAll('article h2'));
+  if(!('IntersectionObserver' in window))return;
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting)return;
+      links.forEach(function(link){link.removeAttribute('aria-current')});
+      var active=document.querySelector('.toc a[href="#'+entry.target.id+'"]');
+      if(active)active.setAttribute('aria-current','true');
+    });
+  },{rootMargin:'-20% 0px -65%'});
+  headings.forEach(function(heading){observer.observe(heading)});
+})();
+</script>
+</body>
+</html>
