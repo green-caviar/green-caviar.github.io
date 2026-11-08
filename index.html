@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>長谷川永将 | Nagamasa Hasegawa</title>
-<meta name="description" content="長谷川永将(Nagamasa Hasegawa)。一橋大学ソーシャル・データサイエンス学部。Pythonバックエンドと自然言語処理。">
+<meta name="description" content="長谷川永将(Nagamasa Hasegawa)。一橋大学ソーシャル・データサイエンス学部、社会計算言語学研究室。自然言語処理。">
 <meta property="og:title" content="長谷川永将 | Nagamasa Hasegawa">
 <meta property="og:image" content="https://green-caviar.dev/grid3x3.jpg">
 <meta name="twitter:card" content="summary">
@@ -14,22 +14,21 @@
 <style>
 :root{
   --ink:#1d2129; --sub:#59606c; --accent:#31548C; --line:#e4e2dc; --ground:#fbfaf7;
-  /* 写真レール(縦モード)。高さは本文列に合わせて自動で伸び、入る数だけ球を並べる
-     (--rail-h はJS無効時等のフォールバック値のみ) */
-  --ball-big:132px; --ball-small:72px; --ball-gap:20px;
-  --rail-h:592px; --rail-shift:-18px; --rail-mode:v;
+  --photo:132px; --face:72px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--ground);color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;font-size:15.5px;line-height:2;min-height:100vh;display:flex}
 main{width:100%;min-width:0;max-width:1240px;margin:auto;padding:56px clamp(24px,5vw,72px) 64px}
 
-.page{display:grid;grid-template-columns:var(--ball-big) minmax(0,1fr);gap:0 clamp(32px,4vw,64px);align-items:start}
+.page{display:grid;grid-template-columns:var(--photo) minmax(0,1fr);gap:0 clamp(32px,4vw,64px);align-items:start}
 .content{grid-column:2;grid-row:1;min-width:0}
 
-.rail{grid-column:1;grid-row:1;position:relative;width:var(--ball-big);height:auto;align-self:stretch;min-height:var(--rail-h);margin-top:var(--rail-shift);overflow:hidden;visibility:hidden}
-.rail.is-ready{visibility:visible}
-.ball{position:absolute;top:0;left:0;width:var(--ball-big);height:var(--ball-big);border-radius:50%;object-fit:cover;background:var(--ground);box-shadow:0 0 0 1.5px var(--line);transform-origin:50% 50%;opacity:0;will-change:transform,opacity;transition:transform .4s cubic-bezier(.2,.85,.3,1),opacity .4s ease}
-@media(prefers-reduced-motion:reduce){.ball{transition:none}}
+/* 顔写真: 本人の写真を大きく1枚、その下にアート版を小さく縦一列に並べる(動かさない) */
+.portrait{grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:center;gap:20px}
+.photo,.faces img{display:block;border-radius:50%;object-fit:cover;background:var(--ground);box-shadow:0 0 0 1.5px var(--line)}
+.photo{width:var(--photo);height:var(--photo)}
+.faces{display:flex;flex-direction:column;align-items:center;gap:16px}
+.faces img{width:var(--face);height:var(--face)}
 
 header h1{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(26px,3.4vw,34px);font-weight:600;letter-spacing:.06em}
 header .romaji{font-size:12.5px;letter-spacing:.22em;color:var(--sub);text-transform:uppercase;margin-top:4px}
@@ -53,7 +52,7 @@ ul.vtimeline li::before{content:"";position:absolute;left:0;top:7px;width:12px;h
 .what{font-weight:700;margin-top:2px}
 
 /* 各列でセクションを縦に積む(左=ABOUT+AWARDS・右=EXPERIENCE+WRITING) */
-.stack{display:grid;gap:48px;min-width:0}
+.stack{display:grid;gap:48px;min-width:0;align-content:start}
 ul.awards{list-style:none;margin-top:8px}
 ul.awards li{padding-bottom:18px}
 ul.awards li:last-child{padding-bottom:0}
@@ -66,14 +65,15 @@ ul.awards li:last-child{padding-bottom:0}
 .post-body{display:block;min-width:0}
 .post-body .when,.post-title,.post-card .note{display:block}
 .post-title{font-weight:700;color:var(--accent);margin-top:2px}
-@media(max-width:760px){.post-thumb{width:84px;height:62px}}
+.post-thumb.is-wide{height:auto;aspect-ratio:480/251;object-position:center}
+.post-card + .post-card{margin-top:12px}
+@media(max-width:760px){.post-thumb{width:84px;height:62px}.post-thumb.is-wide{height:auto}}
 
 footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--sub)}
 
-/* 大画面: 余白を食いすぎないよう全体をスケールアップ
-   --rail-h = 150+20+82+4*102 = 660 */
+/* 大画面: 余白を食いすぎないよう全体をスケールアップ */
 @media(min-width:1500px){
-  :root{ --ball-big:150px; --ball-small:82px; --rail-h:660px; }
+  :root{ --photo:150px; --face:82px; }
   body{font-size:17px}
   main{max-width:1460px}
   header h1{font-size:40px}
@@ -82,44 +82,42 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
   .when{font-size:13.5px}
 }
 
-/* レールが左の一列を取るぶん、2列本文は早めに1列へ落とす */
+/* 写真が左の一列を取るぶん、2列本文は早めに1列へ落とす */
 @media(max-width:980px){
   .cols{grid-template-columns:1fr;gap:48px 0}
 }
 
-/* スマホ: レールを畳んでページ最上部の横一列にする */
+/* スマホ: 写真を本文の上に置き、アート版はその下に横一列 */
 @media(max-width:760px){
   .nw{white-space:normal}
   .fact .value,.what{overflow-wrap:break-word}
   .fact{display:block}
   .fact .label{padding-top:0;margin-bottom:2px;display:block}
-  :root{ --ball-big:64px; --ball-gap:16px; --rail-mode:h; }
-  .page{grid-template-columns:minmax(0,1fr);gap:28px 0}
+  :root{ --photo:88px; --face:30px; }
+  .page{grid-template-columns:minmax(0,1fr);gap:24px 0}
+  .portrait{align-items:flex-start;gap:14px}
+  .faces{flex-direction:row;flex-wrap:wrap;gap:8px}
   .content{grid-column:1;grid-row:2}
-  .rail{grid-column:1;grid-row:1;width:100%;height:var(--ball-big);margin-top:0}
 }
 </style>
-<noscript><style>
-  .rail{visibility:visible;height:var(--ball-big);overflow:visible;margin-top:0}
-  .ball{position:static;opacity:1}
-  .ball:not(:first-of-type){display:none}
-</style></noscript>
 </head>
 <body>
 <main>
 <div class="page">
 
-<div class="rail" id="rail">
-  <img class="ball" src="photo.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-01.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-02.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-03.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-04.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-05.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-06.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-07.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-08.jpg" alt="" aria-hidden="true" decoding="async">
-  <img class="ball" src="faces/face-09.jpg" alt="" aria-hidden="true" decoding="async">
+<div class="portrait">
+  <img class="photo" src="photo.jpg" alt="長谷川永将の顔写真" decoding="async">
+  <div class="faces" aria-hidden="true">
+    <img src="faces/face-01.jpg" alt="" decoding="async">
+    <img src="faces/face-02.jpg" alt="" decoding="async">
+    <img src="faces/face-03.jpg" alt="" decoding="async">
+    <img src="faces/face-04.jpg" alt="" decoding="async">
+    <img src="faces/face-05.jpg" alt="" decoding="async">
+    <img src="faces/face-06.jpg" alt="" decoding="async">
+    <img src="faces/face-07.jpg" alt="" decoding="async">
+    <img src="faces/face-08.jpg" alt="" decoding="async">
+    <img src="faces/face-09.jpg" alt="" decoding="async">
+  </div>
 </div>
 
 <div class="content">
@@ -127,7 +125,7 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
 <header>
   <h1>長谷川 永将</h1>
   <p class="romaji">Nagamasa Hasegawa</p>
-  <p class="tagline">美を追求し、学びを血肉に</p>
+  <p class="tagline">🌅 Be the poet of your life.</p>
 </header>
 
 <div class="cols">
@@ -138,11 +136,11 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
   <h2>ABOUT</h2>
   <div class="fact">
     <span class="label">所属</span>
-    <span class="value"><span class="nw">一橋大学</span> <span class="nw">ソーシャル・</span><span class="nw">データサイエンス学部 3年</span></span>
+    <span class="value"><span class="nw">一橋大学</span> <span class="nw">ソーシャル・</span><span class="nw">データサイエンス学部 3年</span><br><span class="nw"><a href="https://www.scl.sds.hit-u.ac.jp/">社会計算言語学研究室</a></span></span>
   </div>
   <div class="fact">
     <span class="label">領域</span>
-    <span class="value"><span class="nw">Pythonバックエンド</span> / <span class="nw">自然言語処理(LLMの評価研究)</span></span>
+    <span class="value"><span class="nw">自然言語処理</span></span>
   </div>
   <div class="fact">
     <span class="label">資格</span>
@@ -159,10 +157,6 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
   <div class="fact">
     <span class="label">GITHUB</span>
     <span class="value"><span class="nw"><a href="https://github.com/green-caviar">github.com/green-caviar</a></span></span>
-  </div>
-  <div class="fact">
-    <span class="label">WANTEDLY</span>
-    <span class="value"><span class="nw"><a href="https://www.wantedly.com/id/nagamasa_hasegawa">wantedly.com/id/nagamasa_hasegawa</a></span><br>現在インターン先を探しています。</span>
   </div>
 </section>
 
@@ -196,11 +190,23 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
       <p class="when">2026.4 -</p>
       <p class="what"><span class="nw">一橋大学</span> <span class="nw">社会計算言語学研究室</span></p>
     </li>
+    <li>
+      <p class="when">2026.9 -</p>
+      <p class="what"><span class="nw">株式会社IVRy(データグループ インターン)</span></p>
+    </li>
   </ul>
 </section>
 
 <section>
   <h2>WRITING</h2>
+  <a class="post-card" href="https://note.com/green_caviar/n/n8d91ed1eb5c7">
+    <img class="post-thumb is-wide" src="blog/images/ivry-note-thumb.jpg" alt="" loading="lazy" decoding="async">
+    <span class="post-body">
+      <span class="when">2026.11 · note</span>
+      <span class="post-title">ワクワクする仕事がしたい！ B3 インターンの IVRy での 2 か月</span>
+      <span class="note">IVRy のデータグループでのインターン2か月の振り返り。</span>
+    </span>
+  </a>
   <a class="post-card" href="blog/yans2026-report.html">
     <img class="post-thumb" src="blog/images/yans2026-thumb.jpg" alt="" loading="lazy" decoding="async">
     <span class="post-body">
@@ -223,184 +229,5 @@ footer{margin-top:72px;border-top:1px solid var(--line);padding-top:16px;font-si
 </div>
 </main>
 
-<script>
-/* 顔写真レール: 10枚を1本のキューとして循環させる。
-   球のDOMは固定で、各球が持つ「論理位置 slot」を毎ステップ1つ減らすだけ。
-   slot 0 = 焦点(大)、1..n-1 = 小、n以上 = 下端の待機点(不可視・重ねて格納)。
-   slot 0 の球だけは一旦「上の退出点」へ動かしてから、遷移後に無音で待機点へ戻す。 */
-(function(){
-  var rail = document.getElementById('rail');
-  if(!rail) return;
-  var balls = Array.prototype.slice.call(rail.querySelectorAll('.ball'));
-  if(balls.length < 3) return;
-  // 背の高い画面でも球が尽きないよう、顔写真からランダムに複製して池を広げる(表示上限=POOL-1)
-  var POOL = 16;
-  var faceSrcs = balls.slice(1).map(function(b){ return b.getAttribute('src'); });
-  while(balls.length < POOL){
-    var extra = balls[1].cloneNode(false);
-    extra.src = faceSrcs[Math.floor(Math.random() * faceSrcs.length)];
-    rail.appendChild(extra);
-    balls.push(extra);
-  }
-  var TOTAL = balls.length;
-
-  var FOCUS_ALT = '長谷川永将の顔写真(アート)';
-  var STEP_MS = 3000;   // 1段進むまでの間隔
-  var MOVE_MS = 400;    // CSS transition と揃える
-  var DIM = '0.88';     // 焦点以外のわずかな沈め
-
-  var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-
-  var slot = [];        // slot[i] = balls[i] の論理位置
-  var geo = null;
-  var focusIdx = -1;
-  var timer = null, resetTimer = null, resizeTimer = null;
-  var pendingExit = -1; // 退出中の球(遷移後に待機点へ戻す)
-
-  function cssNum(style, name, fallback){
-    var v = parseFloat(style.getPropertyValue(name));
-    return isNaN(v) ? fallback : v;
-  }
-
-  // CSS変数から現在のモード(縦/横)と座標を割り出す。ブレークポイントの正はCSS側。
-  function measure(){
-    var st = getComputedStyle(rail);
-    var big = cssNum(st, '--ball-big', 132);
-    var gap = cssNum(st, '--ball-gap', 20);
-    var horiz = (st.getPropertyValue('--rail-mode') || 'v').trim() === 'h';
-    var pos = [], n, k;
-
-    if(horiz){
-      var w = rail.clientWidth || big;
-      n = Math.floor((w - big) / (big + gap)) + 1;  // 帯幅に入るだけ並べる(スマホ実寸では4個前後)
-      if(n < 3) n = 3;
-      if(n > TOTAL - 1) n = TOTAL - 1;
-      var off = Math.max(0, (w - (n*big + (n-1)*gap)) / 2);  // 帯の中央に寄せる
-      // 横モードは一様サイズ。焦点は先頭(左端)で、扱いは縦と揃える
-      for(k = 0; k < n; k++) pos.push({cx: off + big/2 + k*(big+gap), cy: big/2, s:1, focus:k===0});
-      geo = {
-        big: big, n: n, pos: pos,
-        // 退出点/待機点は必ず帯の外側に置く(端から出入りして見えるように)
-        exit:  {cx: Math.min(pos[0].cx - big - gap, -big/2), cy: big/2, s:1, focus:false},
-        entry: {cx: Math.max(pos[n-1].cx + big + gap, w + big/2), cy: big/2, s:1, focus:false}
-      };
-    } else {
-      var small = cssNum(st, '--ball-small', 72);
-      var sc = small / big;
-      // 本文列の高さいっぱいに入るだけ並べる(rail は align-self:stretch で行の高さに追随)
-      var h = rail.clientHeight || cssNum(st, '--rail-h', 592);
-      n = Math.floor((h - big) / (small + gap)) + 1;
-      if(n < 2) n = 2;
-      if(n > TOTAL - 1) n = TOTAL - 1;
-      // 最下段の球が下端(©のライン)に揃うよう、余りを間隔へ均等に配る
-      gap = Math.max(8, (h - big - (n-1)*small) / (n-1));
-      pos.push({cx: big/2, cy: big/2, s:1, focus:true});
-      for(k = 1; k < n; k++) pos.push({cx: big/2, cy: big + gap + small/2 + (k-1)*(small+gap), s:sc, focus:false});
-      geo = {
-        big: big, n: n, pos: pos,
-        exit:  {cx: big/2, cy: pos[0].cy - big/2 - gap - small/2, s:sc, focus:false},
-        entry: {cx: big/2, cy: pos[n-1].cy + small + gap, s:sc, focus:false}
-      };
-    }
-  }
-
-  function apply(el, p, visible){
-    var half = geo.big / 2;
-    el.style.transform = 'translate(' + (p.cx - half).toFixed(2) + 'px,' + (p.cy - half).toFixed(2) + 'px) scale(' + p.s.toFixed(4) + ')';
-    el.style.opacity = visible ? (p.focus ? '1' : DIM) : '0';
-    el.style.zIndex = p.focus ? '2' : '1';
-  }
-
-  function render(i){
-    var p = slot[i];
-    if(p < geo.n) apply(balls[i], geo.pos[p], true);
-    else apply(balls[i], geo.entry, false);
-  }
-
-  // 遷移を切った状態で位置を書き換える(循環の継ぎ目を無音にする)
-  function instant(fn){
-    var i;
-    for(i = 0; i < TOTAL; i++) balls[i].style.transition = 'none';
-    fn();
-    void rail.offsetHeight;
-    for(i = 0; i < TOTAL; i++) balls[i].style.transition = '';
-  }
-
-  function setFocus(i){
-    if(focusIdx === i) return;
-    if(focusIdx >= 0){
-      balls[focusIdx].setAttribute('alt', '');
-      balls[focusIdx].setAttribute('aria-hidden', 'true');
-    }
-    focusIdx = i;
-    if(i >= 0){
-      balls[i].setAttribute('alt', FOCUS_ALT);
-      balls[i].removeAttribute('aria-hidden');
-    }
-  }
-
-  function flushExit(){
-    if(pendingExit < 0) return;
-    var i = pendingExit;
-    pendingExit = -1;
-    instant(function(){ render(i); });
-  }
-
-  function tick(){
-    flushExit();  // 前回の退出球を確実に待機点へ戻してから次を進める
-    var i, next = -1;
-    for(i = 0; i < TOTAL; i++){
-      if(slot[i] === 0){
-        slot[i] = TOTAL - 1;
-        apply(balls[i], geo.exit, false);
-        pendingExit = i;
-      } else {
-        slot[i] -= 1;
-        if(slot[i] === 0) next = i;
-        render(i);
-      }
-    }
-    setFocus(next);
-    if(resetTimer) clearTimeout(resetTimer);
-    resetTimer = setTimeout(flushExit, MOVE_MS + 80);
-  }
-
-  function layoutAll(){
-    measure();
-    instant(function(){
-      for(var i = 0; i < TOTAL; i++) render(i);
-    });
-  }
-
-  var order = [], i0;
-  for(i0 = 0; i0 < TOTAL; i0++) order.push(i0);
-  for(i0 = order.length - 1; i0 > 0; i0--){
-    var j = Math.floor(Math.random() * (i0 + 1));
-    var t = order[i0]; order[i0] = order[j]; order[j] = t;
-  }
-  for(i0 = 0; i0 < TOTAL; i0++) slot[i0] = order[i0];
-
-  layoutAll();
-  for(i0 = 0; i0 < TOTAL; i0++) if(slot[i0] === 0) setFocus(i0);
-  rail.classList.add('is-ready');
-
-  function start(){ if(!reduce && !timer) timer = setInterval(tick, STEP_MS); }
-  function stop(){
-    if(timer){ clearInterval(timer); timer = null; }
-    if(resetTimer){ clearTimeout(resetTimer); resetTimer = null; }
-  }
-  start();
-
-  window.addEventListener('resize', function(){
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function(){ pendingExit = -1; layoutAll(); }, 150);
-  });
-
-  document.addEventListener('visibilitychange', function(){
-    if(document.hidden){ stop(); }
-    else { pendingExit = -1; layoutAll(); start(); }
-  });
-})();
-</script>
 </body>
 </html>
